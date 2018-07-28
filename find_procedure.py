@@ -40,11 +40,13 @@ import os
 migrations = 'Migrations'
 current_dir = os.path.dirname(os.path.abspath(__file__))
 target_dir = os.path.join(current_dir, migrations)
-file_list = os.listdir(target_dir)
 
 file_extention = 'sql'
 file_extention_string = '.' + file_extention
-file_output_threshold_value = 5  # Если нужно сократить вывод файлов неким количеством
+
+# Если нужно сократить вывод файлов неким количеством.
+# 0 (ноль), если нужно выводить все файлы.
+file_output_threshold_value = 5
 
 find_string = ''
 
@@ -80,6 +82,7 @@ def file_names_dict_init(find_file_extention, init_dict):
 
 if __name__ == '__main__':
 
+    file_list = os.listdir(target_dir)
     file_list_dic = dict.fromkeys(file_list, False)
     print('В папке {} обнаружено {} файлов'.format(target_dir, len(file_list_dic)))
 
