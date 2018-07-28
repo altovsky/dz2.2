@@ -100,7 +100,7 @@ if __name__ == '__main__':
             continue
         elif found_files_count < file_output_threshold_value or file_output_threshold_value == 0:
             print_valid_file_names(file_list_dic)
-        else:  # found_files_count > file_output_threshold_value:
+        else:
             print('Слишком большой список файлов... Нужно уточнить поиск.')
         print('Всего найдено файлов: {}'.format(found_files_count))
 
