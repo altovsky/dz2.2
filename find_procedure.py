@@ -44,7 +44,7 @@ file_list = os.listdir(target_dir)
 
 file_extention = 'sql'
 file_extention_string = '.' + file_extention
-file_output_threshold_value = 7
+file_output_threshold_value = 5  # Если нужно сократить вывод файлов неким количеством
 
 find_string = ''
 
@@ -72,25 +72,35 @@ def print_valid_file_names(file_dict):
             print(element)
 
 
+def file_names_dict_init(find_file_extention, init_dict):
+    for find_file_name in init_dict:
+        if find_file_name[len(find_file_name) - len(find_file_extention):len(find_file_name)] == find_file_extention:
+            init_dict[find_file_name] = True
+
+
 if __name__ == '__main__':
 
     file_list_dic = dict.fromkeys(file_list, False)
     print('В папке {} обнаружено {} файлов'.format(target_dir, len(file_list_dic)))
 
-    for file_name in file_list_dic:
-        if file_name[len(file_name) - len(file_extention_string):len(file_name)] == file_extention_string:
-            file_list_dic[file_name] = True
+    file_names_dict_init(file_extention_string, file_list_dic)
 
     while True:
         find_string = input('Введите строку для поиска: ')
+
         for file_name in file_list_dic:
             if file_list_dic[file_name] is True:
                 if not find_string_in_file(target_dir, file_name, find_string):
                     file_list_dic[file_name] = False
+
         found_files_count = count_of_occurrences(file_list_dic)
-        if found_files_count < file_output_threshold_value:
+        if found_files_count == 0:
+            print('Такого вхождения не найдено. Начните поиск заново.')
+            file_names_dict_init(file_extention_string, file_list_dic)
+            continue
+        elif found_files_count < file_output_threshold_value or file_output_threshold_value == 0:
             print_valid_file_names(file_list_dic)
-        else:
+        else:  # found_files_count > file_output_threshold_value:
             print('Слишком большой список файлов... Нужно уточнить поиск.')
-        print('Всего: {}'.format(found_files_count))
+        print('Всего найдено файлов: {}'.format(found_files_count))
 
