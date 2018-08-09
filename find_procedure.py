@@ -41,69 +41,52 @@ migrations = 'Migrations'
 current_dir = os.path.dirname(os.path.abspath(__file__))
 target_dir = os.path.join(current_dir, migrations)
 
-file_extention = 'sql'
-file_extention_string = '.' + file_extention
+file_extension = 'sql'
 
 # Если нужно сократить вывод файлов неким количеством.
 # 0 (ноль), если нужно выводить все файлы.
-file_output_threshold_value = 5
+file_output_threshold_value = 7
 
 find_string = ''
 
 
+def read_files(find_file_dir, find_extension):
+    files_list = os.listdir(find_file_dir)
+    find_extension_string = f'.{find_extension}'
+    files_list_real = []
+    for files in files_list:
+        if files.endswith(find_extension_string):
+            files_list_real.append(files)
+    return files_list_real
+
+
 def find_string_in_file(find_file_dir, find_file_name, string_in_file):
     with open(os.path.join(find_file_dir, find_file_name), encoding='utf-8', mode='r') as fn:
-        file_lines = fn.readlines()
-        for line in file_lines:
+        for line in fn:
             if string_in_file in line:
                 return True
         return False
 
 
-def count_of_occurrences(count_dict):
-    count_value = 0
-    for element in count_dict:
-        if count_dict[element] is True:
-            count_value += 1
-    return count_value
-
-
-def print_valid_file_names(file_dict):
-    for element in file_dict:
-        if file_dict[element] is True:
-            print(element)
-
-
-def file_names_dict_init(find_file_extention, init_dict):
-    for find_file_name in init_dict:
-        if find_file_name[len(find_file_name) - len(find_file_extention):len(find_file_name)] == find_file_extention:
-            init_dict[find_file_name] = True
-
-
 if __name__ == '__main__':
 
-    file_list = os.listdir(target_dir)
-    file_list_dic = dict.fromkeys(file_list, False)
-    print('В папке {} обнаружено {} файлов'.format(target_dir, len(file_list_dic)))
-
-    file_names_dict_init(file_extention_string, file_list_dic)
+    file_list = read_files(target_dir, file_extension)
+    print('В папке {} обнаружено {} файлов'.format(target_dir, len(file_list)))
 
     while True:
         find_string = input('Введите строку для поиска: ')
-
-        for file_name in file_list_dic:
-            if file_list_dic[file_name] is True:
-                if not find_string_in_file(target_dir, file_name, find_string):
-                    file_list_dic[file_name] = False
-
-        found_files_count = count_of_occurrences(file_list_dic)
-        if found_files_count == 0:
+        file_list_temp = []
+        for file_name in file_list:
+            if find_string_in_file(target_dir, file_name, find_string):
+                file_list_temp.append(file_name)
+        file_list = file_list_temp
+        if len(file_list) == 0:
             print('Такого вхождения не найдено. Начните поиск заново.')
-            file_names_dict_init(file_extention_string, file_list_dic)
+            file_list = read_files(target_dir, file_extension)
             continue
-        elif found_files_count < file_output_threshold_value or file_output_threshold_value == 0:
-            print_valid_file_names(file_list_dic)
+        elif len(file_list) < file_output_threshold_value or file_output_threshold_value == 0:
+            for file in file_list:
+                print(file)
         else:
             print('Слишком большой список файлов... Нужно уточнить поиск.')
-        print('Всего найдено файлов: {}'.format(found_files_count))
-
+        print(f'Всего найдено файлов: {len(file_list)}')

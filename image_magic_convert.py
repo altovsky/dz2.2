@@ -7,8 +7,7 @@ import os
 source = 'Source'
 result = 'Result'
 convert = 'convert'
-convert_cmd = '-resize'
-convert_res = '200'
+convert_cmd = '-resize 200'
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -25,11 +24,7 @@ for image_name in image_list:
     image_source_path = os.path.join(source_path, image_name)
     image_result_path = os.path.join(result_path, image_name)
 
-    run_path = '{} {} {} {} {}'.format(convert_path,
-                                       image_source_path,
-                                       convert_cmd,
-                                       convert_res,
-                                       image_result_path)
+    run_path = f'{convert_path} {image_source_path} {convert_cmd} {image_result_path}'
 
     proc = subprocess.Popen(run_path, shell=True, stdout=subprocess.PIPE)
     out = proc.communicate()
